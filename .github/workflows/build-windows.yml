@@ -1,0 +1,110 @@
+name: build(Windows)
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+
+env:
+  BASEKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/62641e01-1e8d-4ace-91d6-ae03f7f8a71f/w_BaseKit_p_2024.0.0.49563_offline.exe
+  HPCKIT_URL: https://registrationcenter-download.intel.com/akdlm/IRC_NAS/5b36181e-4974-4733-91c7-0c10c54900a5/w_HPCKit_p_2024.0.0.49588_offline.exe
+
+jobs:
+  Test:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+
+      # Recommendations:
+      #   * support at least 2 operating systems
+      #   * support at least 2 compilers
+      #   * make sure all supported configurations for your project are built
+      #
+      # Disable/enable builds in this list to meet the above recommendations
+      # and your own projects needs
+      matrix:
+        preset:
+          - windows-msvc-debug
+          - windows-msvc-release
+          - windows-clang-debug
+          - windows-clang-release
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Get project name
+        uses: cardinalby/export-env-action@v2
+        with:
+          envFile: ".github/constants.env"
+      
+      - name: Setup OneAPI cache
+        id: setup_oneapi_cache
+        uses: actions/cache@v4
+        with:
+          path: C:\Program Files (x86)\Intel\oneAPI
+          key: oneapi-${{ runner.os }}-${{ hashFiles('.github/oneapi_components.json') }}-${{ env.BASEKIT_URL }}-${{ env.HPCKIT_URL }}
+      
+      - name: Setup CPM cache
+        uses: ./.github/actions/setup_cpm_cache
+      
+      - name: Setup ccache
+        uses: ./.github/actions/setup_ccache
+      
+      - name: Install dependencies using chocolatey
+        run: |
+          choco install ccache
+          choco install cppcheck
+          choco install vswhere
+          choco install opencppcoverage
+        shell: powershell
+
+      - name: Install Intel OneAPI
+        if: steps.setup_oneapi_cache.outputs.cache-hit != 'true'
+        run: powershell .github/scripts/install_oneapi.ps1 "${{ env.BASEKIT_URL }}" "${{ env.HPCKIT_URL }}" ".github/oneapi_components.json"
+        shell: powershell
+      
+      - name: Set Environment Variables
+        run: powershell -File .github/scripts/set_env_vars.ps1 'C:\Program Files (x86)\Intel\oneAPI\setvars.bat'
+        shell: powershell
+
+      - name: (Debug) Show Path
+        run: |
+          echo $env:PATH
+        shell: powershell
+
+      - name: Configure CMake
+        run: |
+          cmake --preset ${{matrix.preset}} -DGIT_SHA:STRING=${{ github.sha }} -DCPM_SOURCE_CACHE=${{ env.CPM_SOURCE_CACHE }}
+        shell: powershell
+
+      - name: Build
+        # Execute the build.
+        run: |
+          cmake --build --preset build-${{matrix.preset}}
+        shell: powershell
+
+      - name: Test
+        if: ${{ !contains(matrix.preset, 'debug') }}
+        run: |
+          ctest --preset test-${{matrix.preset}}
+        shell: powershell
+
+      - name: Test & Coverage
+        if: ${{ contains(matrix.preset, 'debug') }}
+        run: |
+          & "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe" --export_type cobertura:coverage.xml --cover_children --sources ${{ github.workspace }}\src --sources ${{ github.workspace }}\include -- ctest.exe --preset test-${{matrix.preset}}
+        shell: powershell
+
+      - name: Publish to codecov
+        uses: codecov/codecov-action@v4
+        if: ${{ contains(matrix.preset, 'debug') }}
+        with:
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          files: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true

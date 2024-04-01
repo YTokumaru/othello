@@ -1,0 +1,113 @@
+name: build(Ubuntu)
+on:
+  pull_request:
+  release:
+    types: [published]
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      # max-parallel: 1
+
+      # Recommendations:
+      #   * support at least 2 operating systems
+      #   * support at least 2 compilers
+      #   * make sure all supported configurations for your project are built
+      #
+      # Disable/enable builds in this list to meet the above recommendations
+      # and your own projects needs
+      matrix:
+        preset:
+          - unixlike-gcc-debug
+          - unixlike-gcc-release
+          - unixlike-clang-debug
+          - unixlike-clang-release
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # TODO: Add caching with presets
+      # - name: Setup Cache
+      #   uses: ./.github/actions/setup_cache
+      #   with:
+      #     compiler: ${{ matrix.compiler }}
+      #     build_type: ${{ matrix.build_type }}
+      #     packaging_maintainer_mode: ${{ matrix.packaging_maintainer_mode }}
+      #     generator: ${{ matrix.generator }}
+
+      - name: Get project name
+        uses: cardinalby/export-env-action@v2
+        with:
+          envFile: ".github/constants.env"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+          sudo apt-get install -y llvm-dev
+          sudo apt-get install -y cmake
+          sudo apt-get install -y gcovr
+          sudo apt-get install -y cppcheck
+          sudo apt-get install -y ccache
+          sudo apt-get install -y ninja-build
+          sudo apt-get install -y openmpi-bin libopenmpi-dev
+          sudo apt-get install -y libboost-all-dev
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 17
+
+      - name: Setup CPM cache
+        uses: ./.github/actions/setup_cpm_cache
+  
+      - name: Setup ccache
+        uses: ./.github/actions/setup_ccache
+          
+      - name: Configure CMake
+        if: ${{ contains(matrix.preset, 'clang') }}
+        run: |
+          cmake --preset ${{matrix.preset}} -Dmyproject_USE_SYSTEM_BOOST=TRUE -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17 -Dmyproject_ENABLE_CLANG_TIDY=FALSE -Dmyproject_NPROC=2
+      
+      - name: Configure CMake
+        if: ${{ contains(matrix.preset, 'gcc') }}
+        run: |
+          cmake --preset ${{matrix.preset}} -Dmyproject_USE_SYSTEM_BOOST=TRUE -DCMAKE_CXX_COMPILER=g++-13 -DCMAKE_C_COMPILER=gcc-13 -Dmyproject_ENABLE_CLANG_TIDY=FALSE -Dmyproject_NPROC=2
+      - name: Build
+        # Execute the build.
+        run: |
+          cmake --build --preset build-${{matrix.preset}}
+
+      - name: Test
+        if: ${{ !contains(matrix.preset, 'debug') }}
+        run: |
+          ctest --preset test-${{matrix.preset}}
+
+      - name: Test & Coverage
+        if: ${{ contains(matrix.preset, 'debug') && contains(matrix.preset, 'clang') }}
+        run: |
+          ctest --preset test-${{matrix.preset}}
+          cd out/build/${{matrix.preset}}/
+          gcovr -r ../../../ -f ../../../include -f ../../../src --xml-pretty --xml ../../../coverage.xml  --gcov-executable "llvm-cov gcov"
+
+      - name: Test & Coverage
+        if: ${{ contains(matrix.preset, 'debug') && contains(matrix.preset, 'gcc') }}
+        run: |
+          ctest --preset test-${{matrix.preset}}
+          cd out/build/${{matrix.preset}}/
+          gcovr -r ../../../ -f ../../../include -f ../../../src --xml-pretty --xml ../../../coverage.xml  --gcov-executable "gcov"
+
+      - name: Publish to codecov
+        uses: codecov/codecov-action@v4
+        if: ${{ contains(matrix.preset, 'debug') }}
+        with:
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          files: ${{ github.workspace }}/coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
