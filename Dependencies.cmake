@@ -3,7 +3,7 @@ include(cmake/CPM.cmake)
 # Done as a function so that updates to variables like
 # CMAKE_CXX_FLAGS don't propagate out to other
 # targets
-function(myproject_setup_dependencies)
+function(othello_setup_dependencies)
   # For each dependency, see if it's
   # already been provided to us by a parent project
 
@@ -62,8 +62,8 @@ function(myproject_setup_dependencies)
         "FTXUI_BUILD_EXAMPLES OFF")
   endif()
 
-  if(NOT myproject_USE_SYSTEM_BOOST)
-    if(myproject_ENABLE_MPI)
+  if(NOT othello_USE_SYSTEM_BOOST)
+    if(othello_ENABLE_MPI)
       # boost is a huge project and directly downloading the 'alternate release'
       # from github is much faster than recursively cloning the repo.
       CPMAddPackage(

@@ -13,8 +13,8 @@
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "installDir": "${sourceDir}/out/install/${presetName}",
       "cacheVariables": {
-        "myproject_ENABLE_MPI": "ON",
-        "myproject_NPROC": "4"
+        "othello_ENABLE_MPI": "ON",
+        "othello_NPROC": "4"
       }
     },
     {
@@ -62,9 +62,9 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
-        "myproject_ENABLE_IPO": false,
+        "othello_ENABLE_IPO": false,
         "CMAKE_BUILD_TYPE": "Debug",
-        "myproject_ENABLE_COVERAGE": "True"
+        "othello_ENABLE_COVERAGE": "True"
       }
     },
     {
@@ -76,7 +76,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
-        "myproject_ENABLE_IPO": false,
+        "othello_ENABLE_IPO": false,
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
@@ -90,7 +90,7 @@
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl",
         "CMAKE_BUILD_TYPE": "Debug",
-        "myproject_ENABLE_COVERAGE": "True"
+        "othello_ENABLE_COVERAGE": "True"
       },
       "vendor": {
         "microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -125,8 +125,8 @@
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_BUILD_TYPE": "Debug",
-        "myproject_ENABLE_COVERAGE": "True",
-        "myproject_ENABLE_IPO": false
+        "othello_ENABLE_COVERAGE": "True",
+        "othello_ENABLE_IPO": false
       }
     },
     {
@@ -139,7 +139,7 @@
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
         "CMAKE_BUILD_TYPE": "Release",
-        "myproject_ENABLE_IPO": false
+        "othello_ENABLE_IPO": false
       }
     },
     {
@@ -152,8 +152,8 @@
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "Debug",
-        "myproject_ENABLE_COVERAGE": "True",
-        "myproject_ENABLE_IPO": false
+        "othello_ENABLE_COVERAGE": "True",
+        "othello_ENABLE_IPO": false
       }
     },
     {
@@ -166,7 +166,7 @@
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "Release",
-        "myproject_ENABLE_IPO": false
+        "othello_ENABLE_IPO": false
       }
     }
   ],

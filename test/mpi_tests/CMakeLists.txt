@@ -1,6 +1,6 @@
 include(GenerateExportHeader)
 
-if(myproject_USE_SYSTEM_BOOST)
+if(othello_USE_SYSTEM_BOOST)
   find_package(Boost REQUIRED COMPONENTS mpi)
 endif()
 # ---- Dependencies ----
@@ -10,9 +10,9 @@ add_executable(serial_integrate_tests serial_integrate_tests.cpp)
 target_link_libraries(
   serial_integrate_tests
   PRIVATE 
-          myproject::myproject_warnings
-          myproject::myproject_options
-          myproject::serial_integrate)
+          othello::othello_warnings
+          othello::othello_options
+          othello::serial_integrate)
 target_link_system_libraries(serial_integrate_tests PRIVATE boost_mpi Catch2::Catch2WithMain)
 set_target_properties(serial_integrate_tests PROPERTIES CXX_CPPCHECK "")
 set_target_properties(serial_integrate_tests PROPERTIES CXX_CLANG_TIDY "")
@@ -33,10 +33,10 @@ add_executable(parallel_integrate_tests parallel_integrate_tests.cpp)
 target_link_libraries(
   parallel_integrate_tests
   PRIVATE 
-          myproject::myproject_warnings
-          myproject::myproject_options
-          myproject::parallel_integrate)
-if(myproject_USE_SYSTEM_BOOST)
+          othello::othello_warnings
+          othello::othello_options
+          othello::parallel_integrate)
+if(othello_USE_SYSTEM_BOOST)
   target_link_system_libraries(parallel_integrate_tests PRIVATE Boost::mpi)
 else()
   target_link_system_libraries(parallel_integrate_tests PRIVATE boost_mpi boost_math)
@@ -48,5 +48,5 @@ target_link_system_libraries(
 set_target_properties(parallel_integrate_tests PROPERTIES CXX_CPPCHECK "")
 set_target_properties(parallel_integrate_tests PROPERTIES CXX_CLANG_TIDY "")
 # temporary disable leak detection for parallel tests
-add_test(NAME parallel_integrate_tests COMMAND mpiexec -np ${myproject_NPROC} $<TARGET_FILE:parallel_integrate_tests>)
+add_test(NAME parallel_integrate_tests COMMAND mpiexec -np ${othello_NPROC} $<TARGET_FILE:parallel_integrate_tests>)
 set_tests_properties(parallel_integrate_tests PROPERTIES ENVIRONMENT "ASAN_OPTIONS=detect_leaks=0")

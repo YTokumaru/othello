@@ -1,16 +1,16 @@
 include(GenerateExportHeader)
 
-if(myproject_USE_SYSTEM_BOOST)
+if(othello_USE_SYSTEM_BOOST)
   find_package(Boost REQUIRED COMPONENTS mpi)
 endif()
 
 add_library(serial_integrate serial_integrate.cpp)
-add_library(myproject::serial_integrate ALIAS serial_integrate)
+add_library(othello::serial_integrate ALIAS serial_integrate)
 target_link_libraries(
     serial_integrate
     PRIVATE
-    myproject_options
-    myproject_warnings
+    othello_options
+    othello_warnings
 )
 target_include_directories(serial_integrate ${WARNING_GUARD} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                                                                   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>)
@@ -38,15 +38,15 @@ if(NOT BUILD_SHARED_LIBS)
 endif()
 
 add_library(parallel_integrate parallel_integrate.cpp)
-add_library(myproject::parallel_integrate ALIAS parallel_integrate)
+add_library(othello::parallel_integrate ALIAS parallel_integrate)
 target_link_libraries(
     parallel_integrate
     PRIVATE
-    myproject::myproject_options
-    myproject::myproject_warnings
-    myproject::serial_integrate
+    othello::othello_options
+    othello::othello_warnings
+    othello::serial_integrate
 )
-if(myproject_USE_SYSTEM_BOOST)
+if(othello_USE_SYSTEM_BOOST)
   target_link_system_libraries(
       parallel_integrate
       PUBLIC
