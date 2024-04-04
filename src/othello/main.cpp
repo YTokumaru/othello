@@ -1,4 +1,5 @@
 #include <ftxui/component/component.hpp>// for Slider
+#include <ftxui/component/event.hpp>
 #include <ftxui/component/mouse.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/canvas.hpp>
@@ -25,6 +26,7 @@ int main()
   const int board_size = 8;
   const int canvas_size = 160;
   const int radius = 8;
+  auto screen = ftxui::ScreenInteractive::FitComponent();
 
   const ftxui::Color board_color = ftxui::Color::Green;
   auto render_board = ftxui::Renderer([&] {
@@ -56,13 +58,13 @@ int main()
     if (event.is_mouse()) {
       mouse_x = event.mouse().x * 2;
       mouse_y = event.mouse().y * 4;
+      if (event.mouse().motion == ftxui::Mouse::Motion::Pressed) { screen.Exit(); }
     }
     return false;
   });
 
   auto component_renderer = ftxui::Renderer(board_with_mouse, [&] { return board_with_mouse->Render(); });
 
-  auto screen = ftxui::ScreenInteractive::FitComponent();
   screen.Loop(component_renderer);
   return 0;
 }
