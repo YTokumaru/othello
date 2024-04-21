@@ -7,6 +7,7 @@
 #include <ftxui/screen/color.hpp>
 #include <ftxui/screen/screen.hpp>
 #include <functional>
+#include <othello/board.hpp>
 #include <utility>
 
 
