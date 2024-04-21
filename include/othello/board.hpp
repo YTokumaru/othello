@@ -1,4 +1,5 @@
 #ifndef OTHELLO_HPP
+#define OTHELLO_HPP
 #include <array>
 #include <tuple>
 #include <vector>
