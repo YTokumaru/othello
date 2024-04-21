@@ -1,6 +1,7 @@
 include(GenerateExportHeader)
 
 add_executable(main main.cpp)
+target_link_libraries(main PRIVATE othello_options othello_warnings)
 target_link_libraries(
   main
   PRIVATE

@@ -1,14 +1,13 @@
-#include <ftxui/component/component.hpp>// for Slider
+#include <ftxui/component/component.hpp>
 #include <ftxui/component/event.hpp>
 #include <ftxui/component/mouse.hpp>
 #include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/canvas.hpp>
-#include <ftxui/dom/elements.hpp>// for text, border
+#include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/color.hpp>
 #include <ftxui/screen/screen.hpp>
 #include <functional>
 #include <othello/board.hpp>
-#include <utility>
 
 
 std::function<void(ftxui::Pixel &)> setColor(ftxui::Color foreground, ftxui::Color backgroud)
@@ -19,32 +18,53 @@ std::function<void(ftxui::Pixel &)> setColor(ftxui::Color foreground, ftxui::Col
   };
 }
 
-ftxui::Canvas boardCanvas(int mouse_x, int mouse_y)
+ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
 {
 
-  const int board_size = 8;
-  const int canvas_size = 160;
-  const int radius = 8;
+  const int BOARD_SIZE = 8;
+  const int CANVAS_SIZE = 160;
+  const int RADIUS = 8;
 
-  const ftxui::Color board_color = ftxui::Color::Green;
-
-  auto mycanvas = ftxui::Canvas(canvas_size, canvas_size);
+  const ftxui::Color BOARD_COLOR = ftxui::Color::Green;
+  auto mycanvas = ftxui::Canvas(CANVAS_SIZE, CANVAS_SIZE);
   // Color the background
-  for (int x_coor = 0; x_coor < canvas_size; x_coor++) {
-    for (int y_coor = 0; y_coor < canvas_size; y_coor++) {
+  for (int x_coor = 0; x_coor < CANVAS_SIZE; x_coor++) {
+    for (int y_coor = 0; y_coor < CANVAS_SIZE; y_coor++) {
       mycanvas.DrawBlock(
-        x_coor, y_coor, true, [board_color](ftxui::Pixel &pixel) { pixel.foreground_color = board_color; });
+        x_coor, y_coor, true, [BOARD_COLOR](ftxui::Pixel &pixel) { pixel.foreground_color = BOARD_COLOR; });
     }
   }
   // Draw the pieces if the mouse is inside
-  for (int x_cnt = 0; x_cnt < board_size; x_cnt++) {
-    for (int y_cnt = 0; y_cnt < board_size; y_cnt++) {
-      if ((canvas_size / board_size) * x_cnt <= mouse_x && mouse_x < (canvas_size / board_size) * (x_cnt + 1)
-          && (canvas_size / board_size) * y_cnt <= mouse_y && mouse_y < (canvas_size / board_size) * (y_cnt + 1)) {
-        mycanvas.DrawPointCircleFilled((canvas_size / board_size) * x_cnt + (canvas_size / board_size) / 2,
-          (canvas_size / board_size) * y_cnt + (canvas_size / board_size) / 2,
-          radius,
-          setColor(ftxui::Color::Black, board_color));
+  for (int x_cnt = 0; x_cnt < BOARD_SIZE; x_cnt++) {
+    for (int y_cnt = 0; y_cnt < BOARD_SIZE; y_cnt++) {
+      if ((CANVAS_SIZE / BOARD_SIZE) * x_cnt <= mouse_x && mouse_x < (CANVAS_SIZE / BOARD_SIZE) * (x_cnt + 1)
+          && (CANVAS_SIZE / BOARD_SIZE) * y_cnt <= mouse_y && mouse_y < (CANVAS_SIZE / BOARD_SIZE) * (y_cnt + 1)) {
+        mycanvas.DrawPointCircleFilled((CANVAS_SIZE / BOARD_SIZE) * x_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          (CANVAS_SIZE / BOARD_SIZE) * y_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          RADIUS,
+          setColor(ftxui::Color::Black, BOARD_COLOR));
+      }
+    }
+  }
+
+  // draw the board
+  for (int x_cnt = 0; x_cnt < BOARD_SIZE; x_cnt++) {
+    for (int y_cnt = 0; y_cnt < BOARD_SIZE; y_cnt++) {
+      switch (board.at(x_cnt, y_cnt)) {
+      case othello::White:
+        mycanvas.DrawPointCircleFilled((CANVAS_SIZE / BOARD_SIZE) * x_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          (CANVAS_SIZE / BOARD_SIZE) * y_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          RADIUS,
+          setColor(ftxui::Color::White, BOARD_COLOR));
+        break;
+      case othello::Black:
+        mycanvas.DrawPointCircleFilled((CANVAS_SIZE / BOARD_SIZE) * x_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          (CANVAS_SIZE / BOARD_SIZE) * y_cnt + (CANVAS_SIZE / BOARD_SIZE) / 2,
+          RADIUS,
+          setColor(ftxui::Color::Black, BOARD_COLOR));
+        break;
+      default:
+        break;
       }
     }
   }
@@ -53,10 +73,14 @@ ftxui::Canvas boardCanvas(int mouse_x, int mouse_y)
 
 int main()
 {
+  othello::Board board;
+  board.edit(1, 2, othello::White);
+  board.place(3, 2, othello::White);
+
   int mouse_x = 0;
   int mouse_y = 0;
   auto screen = ftxui::ScreenInteractive::FitComponent();
-  auto board_component = ftxui::Renderer([&]() { return ftxui::canvas(std::move(boardCanvas(mouse_x, mouse_y))); })
+  auto board_component = ftxui::Renderer([&]() { return ftxui::canvas(boardCanvas(board, mouse_x, mouse_y)); })
                          | ftxui::CatchEvent([&](ftxui::Event event) {// Mouse handling
                              if (event.is_mouse()) {
                                mouse_x = event.mouse().x * 2;
