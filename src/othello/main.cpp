@@ -9,8 +9,6 @@
 int main()
 {
   othello::Board board;
-  board.edit(1, 2, othello::White);
-  board.place(3, 2, othello::White);
 
   int mouse_x = 0;
   int mouse_y = 0;
@@ -22,7 +20,11 @@ int main()
                                mouse_y = event.mouse().y * 4;
                                if (event.mouse().motion == ftxui::Mouse::Motion::Pressed) {
                                  auto [x_cnt, y_cnt] = coord2count(mouse_x, mouse_y);
-                                 board.place(x_cnt, y_cnt, othello::Black);
+                                 if (board.getTurn() % 2 == 0) {
+                                   board.place(x_cnt, y_cnt, othello::Black);
+                                 } else {
+                                   board.place(x_cnt, y_cnt, othello::White);
+                                 }
                                }
                              }
                              return false;

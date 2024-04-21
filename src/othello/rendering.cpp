@@ -7,7 +7,6 @@
 #include <tuple>
 
 
-
 std::function<void(ftxui::Pixel &)> setColor(ftxui::Color foreground, ftxui::Color backgroud)
 {
   return [foreground, backgroud](ftxui::Pixel &pixel) {
@@ -31,9 +30,9 @@ std::tuple<int, int> count2coord(int x_cnt, int y_cnt)
 ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
 {
   const int RADIUS = 8;
-
   const ftxui::Color BOARD_COLOR = ftxui::Color::Green;
   auto mycanvas = ftxui::Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+
   // Color the background
   for (int x_coor = 0; x_coor < CANVAS_WIDTH; x_coor++) {
     for (int y_coor = 0; y_coor < CANVAS_HEIGHT; y_coor++) {
@@ -41,10 +40,14 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
         x_coor, y_coor, true, [BOARD_COLOR](ftxui::Pixel &pixel) { pixel.foreground_color = BOARD_COLOR; });
     }
   }
+
   // Draw the piece if the mouse is inside
   auto [mouse_x_cnt, mouse_y_cnt] = coord2count(mouse_x, mouse_y);
   auto [mouse_tile_x, mouse_tile_y] = count2coord(mouse_x_cnt, mouse_y_cnt);
-  mycanvas.DrawPointCircleFilled(mouse_tile_x, mouse_tile_y, RADIUS, setColor(ftxui::Color::Black, BOARD_COLOR));
+  mycanvas.DrawPointCircle(mouse_tile_x,
+    mouse_tile_y,
+    RADIUS,
+    setColor(board.getTurn() % 2 == 0 ? ftxui::Color::Black : ftxui::Color::White, BOARD_COLOR));
 
   // draw the board
   for (int x_cnt = 0; x_cnt < othello::BOARD_WIDTH; x_cnt++) {

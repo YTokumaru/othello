@@ -1,6 +1,7 @@
 #ifndef OTHELLO_HPP
 #define OTHELLO_HPP
 #include <array>
+#include <cstddef>
 #include <tuple>
 #include <vector>
 
@@ -33,7 +34,6 @@ public:
   Board &operator=(const Board &) = default;
   ~Board() = default;
 
-  int edit(int x, int y, othello::Color color);
   /**
    * @brief Changes the board by a piece on (x,y)
    * @return EXIT_SUCCESS if successfully placed and board changed, otherwise EXIT_FAILURE
@@ -42,7 +42,10 @@ public:
   [[nodiscard]] othello::Color at(int x, int y) const;
   othello::Color &at(int x, int y);
 
+  [[nodiscard]] size_t getTurn() const;
+
 private:
+  int edit(int x, int y, othello::Color color);
   std::array<std::array<othello::Color, BOARD_WIDTH>, BOARD_HEIGHT> board_state = {};
   std::vector<std::tuple<int, int, othello::Color>> history;
 };

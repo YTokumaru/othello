@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <othello/board.hpp>
 
-
 using namespace othello;
 
 Board::Board()
@@ -22,6 +21,9 @@ int Board::edit(int x, int y, Color color)
 Color Board::at(int x, int y) const { return board_state.at(y).at(x); }
 
 Color &Board::at(int x, int y) { return board_state.at(y).at(x); }
+
+
+size_t Board::getTurn() const { return history.size(); }
 
 int Board::place(int x, int y, Color color)
 {
@@ -60,5 +62,10 @@ int Board::place(int x, int y, Color color)
       }
     }
   }
-  return place_success ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (place_success) {
+    history.emplace_back(x, y, color);
+    return EXIT_SUCCESS;
+  } else {
+    return EXIT_FAILURE;
+  }
 }
