@@ -1,4 +1,5 @@
 #include <array>
+#include <cstddef>
 #include <cstdlib>
 #include <othello/board.hpp>
 
@@ -33,7 +34,7 @@ int Board::place(std::size_t x, std::size_t y, Color color)
 
   // Check all directions
   const int DIRECTION_CNT = 8;
-  const std::array<std::array<short, 2>, DIRECTION_CNT> directions = { { { { 1, 0 } },
+  const std::array<std::array<std::ptrdiff_t, 2>, DIRECTION_CNT> directions = { { { { 1, 0 } },
     { { 1, 1 } },
     { { 0, 1 } },
     { { -1, 1 } },
@@ -41,22 +42,24 @@ int Board::place(std::size_t x, std::size_t y, Color color)
     { { -1, -1 } },
     { { 0, -1 } },
     { { 1, -1 } } } };
-  for (std::array<short, 2> direction : directions) {
+  for (std::array<std::ptrdiff_t, 2> direction : directions) {
     // Check if a specific direction can be changed
     bool exists_opposite = false;
-    for (int check_x = x + direction.at(0), check_y = y + direction.at(1);
+    for (std::ptrdiff_t check_x = static_cast<std::ptrdiff_t>(x) + direction.at(0),
+                        check_y = static_cast<std::ptrdiff_t>(y) + direction.at(1);
          0 <= check_x && check_x < BOARD_WIDTH && 0 <= check_y && check_y < BOARD_HEIGHT;
          check_x += direction.at(0), check_y += direction.at(1)) {
-      if (at(check_x, check_y) == Empty) { break; }
-      if (at(check_x, check_y) == !color) {
+      if (at(static_cast<std::size_t>(check_x), static_cast<std::size_t>(check_y)) == Empty) { break; }
+      if (at(static_cast<std::size_t>(check_x), static_cast<std::size_t>(check_y)) == !color) {
         exists_opposite = true;
         continue;
       }
-      if (exists_opposite && (at(check_x, check_y) == color)) {
+      if (exists_opposite && (at(static_cast<std::size_t>(check_x), static_cast<std::size_t>(check_y)) == color)) {
         // The opposing color is sandwiched by ours
-        for (int change_x = x, change_y = y; change_x != check_x || change_y != check_y;
+        for (auto change_x = static_cast<std::ptrdiff_t>(x), change_y = static_cast<std::ptrdiff_t>(y);
+             change_x != check_x || change_y != check_y;
              change_x += direction.at(0), change_y += direction.at(1)) {
-          edit(change_x, change_y, color);
+          edit(static_cast<std::size_t>(change_x), static_cast<std::size_t>(change_y), color);
         }
         place_success = true;
       }
