@@ -18,9 +18,9 @@ int Board::edit(int x, int y, Color color)
   return EXIT_SUCCESS;
 }
 
-Color Board::at(int x, int y) const { return board_state.at(y).at(x); }
+Color Board::at(std::size_t x, std::size_t y) const { return board_state.at(y).at(x); }
 
-Color &Board::at(int x, int y) { return board_state.at(y).at(x); }
+Color &Board::at(std::size_t x, std::size_t y) { return board_state.at(y).at(x); }
 
 
 size_t Board::getTurn() const { return history.size(); }

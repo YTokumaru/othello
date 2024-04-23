@@ -1,10 +1,19 @@
+#include <ftxui/component/component.hpp>
+#include <ftxui/component/component_options.hpp>
+#include <ftxui/component/event.hpp>
+#include <ftxui/component/mouse.hpp>
+#include <ftxui/component/screen_interactive.hpp>
 #include <ftxui/dom/canvas.hpp>
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/dom/node.hpp>
 #include <ftxui/screen/color.hpp>
 #include <ftxui/screen/screen.hpp>
 #include <functional>
 #include <othello/board.hpp>
 #include <othello/rendering.hpp>
+#include <string>
 #include <tuple>
+#include <vector>
 
 
 std::function<void(ftxui::Pixel &)> setColor(ftxui::Color foreground, ftxui::Color backgroud)
@@ -66,4 +75,58 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
     }
   }
   return mycanvas;
+}
+
+void boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board)
+{
+  int mouse_x = 0;
+  int mouse_y = 0;
+  auto myscreen = ftxui::Renderer([&]() { return ftxui::canvas(boardCanvas(board, mouse_x, mouse_y)); })
+                  | ftxui::CatchEvent([&](ftxui::Event event) {// Mouse handling
+                      if (event.is_mouse()) {
+                        mouse_x = event.mouse().x * 2;
+                        mouse_y = event.mouse().y * 4;
+                        if (event.mouse().motion == ftxui::Mouse::Motion::Pressed) {
+                          auto [x_cnt, y_cnt] = coord2count(mouse_x, mouse_y);
+                          if (board.getTurn() % 2 == 0) {
+                            board.place(x_cnt, y_cnt, othello::Black);
+                          } else {
+                            board.place(x_cnt, y_cnt, othello::White);
+                          }
+                        }
+                      }
+                      return false;
+                    });
+  auto component_renderer = ftxui::Renderer(myscreen, [&] { return myscreen->Render(); });
+  screen.Loop(component_renderer);
+}
+
+ftxui::Element titleLogo()
+{
+  return ftxui::vbox(ftxui::text(" ██████╗ ████████╗██╗  ██╗███████╗██╗     ██╗      ██████╗ "),
+    ftxui::text("██╔═══██╗╚══██╔══╝██║  ██║██╔════╝██║     ██║     ██╔═══██╗"),
+    ftxui::text("██║   ██║   ██║   ███████║█████╗  ██║     ██║     ██║   ██║"),
+    ftxui::text("██║   ██║   ██║   ██╔══██║██╔══╝  ██║     ██║     ██║   ██║"),
+    ftxui::text("╚██████╔╝   ██║   ██║  ██║███████╗███████╗███████╗╚██████╔╝"),
+    ftxui::text(" ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ "));
+}
+
+int titleRenderer(ftxui::ScreenInteractive &screen)
+{
+  const std::vector<std::string> entries = { "Start", "Quit" };
+
+  int selected = 0;
+
+  ftxui::MenuOption option;
+  option.on_enter = screen.ExitLoopClosure();
+
+  auto menu = ftxui::Menu(&entries, &selected, option);
+
+  auto title_screen = ftxui::Renderer(menu, [&] {
+    return ftxui::hbox(
+      ftxui::filler(), ftxui::vbox(ftxui::filler(), titleLogo(), menu->Render(), ftxui::filler()), ftxui::filler());
+  });
+
+  screen.Loop(title_screen);
+  return selected;
 }

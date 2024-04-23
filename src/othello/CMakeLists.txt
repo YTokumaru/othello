@@ -11,8 +11,6 @@ target_link_libraries(
 target_link_system_libraries(
   main
   PRIVATE
-    ftxui::screen
-    ftxui::dom
     ftxui::component
 )
 
@@ -36,6 +34,11 @@ endif()
 add_library(rendering rendering.cpp)
 add_library(othello::rendering ALIAS rendering)
 target_link_libraries(rendering PRIVATE othello_options othello_warnings)
+target_link_libraries(
+  rendering
+  PRIVATE
+  othello::board
+)
 target_link_system_libraries(
   rendering
   PRIVATE

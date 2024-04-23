@@ -39,8 +39,8 @@ public:
    * @return EXIT_SUCCESS if successfully placed and board changed, otherwise EXIT_FAILURE
    */
   int place(int x, int y, othello::Color color);
-  [[nodiscard]] othello::Color at(int x, int y) const;
-  othello::Color &at(int x, int y);
+  [[nodiscard]] othello::Color at(std::size_t x, std::size_t y) const;
+  othello::Color &at(std::size_t x, std::size_t y);
 
   [[nodiscard]] size_t getTurn() const;
 
