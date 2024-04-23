@@ -24,12 +24,12 @@ std::function<void(ftxui::Pixel &)> setColor(ftxui::Color foreground, ftxui::Col
   };
 }
 
-std::tuple<int, int> coord2count(int x_coor, int y_coor)
+std::tuple<std::size_t, std::size_t> coord2count(int x_coor, int y_coor)
 {
   return { (x_coor * othello::BOARD_WIDTH / CANVAS_WIDTH), (y_coor * othello::BOARD_HEIGHT / CANVAS_HEIGHT) };
 }
 
-std::tuple<int, int> count2coord(int x_cnt, int y_cnt)
+std::tuple<int, int> count2coord(std::size_t x_cnt, std::size_t y_cnt)
 {
   const int tile_width = CANVAS_WIDTH / othello::BOARD_WIDTH;
   const int tile_height = CANVAS_HEIGHT / othello::BOARD_HEIGHT;
@@ -59,8 +59,8 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
     setColor(board.getTurn() % 2 == 0 ? ftxui::Color::Black : ftxui::Color::White, BOARD_COLOR));
 
   // draw the board
-  for (int x_cnt = 0; x_cnt < othello::BOARD_WIDTH; x_cnt++) {
-    for (int y_cnt = 0; y_cnt < othello::BOARD_HEIGHT; y_cnt++) {
+  for (std::size_t x_cnt = 0; x_cnt < othello::BOARD_WIDTH; x_cnt++) {
+    for (std::size_t y_cnt = 0; y_cnt < othello::BOARD_HEIGHT; y_cnt++) {
       auto [center_x, center_y] = count2coord(x_cnt, y_cnt);
       switch (board.at(x_cnt, y_cnt)) {
       case othello::White:

@@ -38,14 +38,14 @@ public:
    * @brief Changes the board by a piece on (x,y)
    * @return EXIT_SUCCESS if successfully placed and board changed, otherwise EXIT_FAILURE
    */
-  int place(int x, int y, othello::Color color);
+  int place(std::size_t x, std::size_t y, othello::Color color);
   [[nodiscard]] othello::Color at(std::size_t x, std::size_t y) const;
   othello::Color &at(std::size_t x, std::size_t y);
 
   [[nodiscard]] size_t getTurn() const;
 
 private:
-  int edit(int x, int y, othello::Color color);
+  int edit(std::size_t x, std::size_t y, othello::Color color);
   std::array<std::array<othello::Color, BOARD_WIDTH>, BOARD_HEIGHT> board_state = {};
   std::vector<std::tuple<int, int, othello::Color>> history;
 };

@@ -12,7 +12,7 @@ Board::Board()
   at(BOARD_WIDTH / 2, BOARD_WIDTH / 2 - 1) = White;
 }
 
-int Board::edit(int x, int y, Color color)
+int Board::edit(std::size_t x, std::size_t y, Color color)
 {
   board_state.at(y).at(x) = color;
   return EXIT_SUCCESS;
@@ -25,7 +25,7 @@ Color &Board::at(std::size_t x, std::size_t y) { return board_state.at(y).at(x);
 
 size_t Board::getTurn() const { return history.size(); }
 
-int Board::place(int x, int y, Color color)
+int Board::place(std::size_t x, std::size_t y, Color color)
 {
   bool place_success = false;
   // The tile we are trying to place must be empty
