@@ -77,7 +77,7 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
   return mycanvas;
 }
 
-void boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board)
+Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board)
 {
   int mouse_x = 0;
   int mouse_y = 0;
@@ -99,6 +99,7 @@ void boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board)
                     });
   auto component_renderer = ftxui::Renderer(myscreen, [&] { return myscreen->Render(); });
   screen.Loop(component_renderer);
+  return Exit;
 }
 
 ftxui::Element titleLogo()
@@ -111,7 +112,7 @@ ftxui::Element titleLogo()
     ftxui::text(" ╚═════╝    ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝ ╚═════╝ "));
 }
 
-int titleRenderer(ftxui::ScreenInteractive &screen)
+Screen_State titleRenderer(ftxui::ScreenInteractive &screen)
 {
   const std::vector<std::string> entries = { "Start", "Quit" };
 
@@ -128,5 +129,5 @@ int titleRenderer(ftxui::ScreenInteractive &screen)
   });
 
   screen.Loop(title_screen);
-  return selected;
+  return selected == 0 ? Game : Exit;
 }
