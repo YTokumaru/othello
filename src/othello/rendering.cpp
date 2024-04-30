@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <ftxui/component/component.hpp>
 #include <ftxui/component/component_options.hpp>
 #include <ftxui/component/event.hpp>
