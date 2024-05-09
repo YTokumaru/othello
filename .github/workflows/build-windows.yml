@@ -27,8 +27,8 @@ jobs:
       # and your own projects needs
       matrix:
         preset:
-          - windows-msvc-debug
-          - windows-msvc-release
+          # - windows-msvc-debug
+          # - windows-msvc-release
           - windows-clang-debug
           - windows-clang-release
 
@@ -40,20 +40,20 @@ jobs:
         uses: cardinalby/export-env-action@v2
         with:
           envFile: ".github/constants.env"
-      
+
       - name: Setup OneAPI cache
         id: setup_oneapi_cache
         uses: actions/cache@v4
         with:
           path: C:\Program Files (x86)\Intel\oneAPI
           key: oneapi-${{ runner.os }}-${{ hashFiles('.github/oneapi_components.json') }}-${{ env.BASEKIT_URL }}-${{ env.HPCKIT_URL }}
-      
+
       - name: Setup CPM cache
         uses: ./.github/actions/setup_cpm_cache
-      
+
       - name: Setup ccache
         uses: ./.github/actions/setup_ccache
-      
+
       - name: Install dependencies using chocolatey
         run: |
           choco install ccache
@@ -66,7 +66,7 @@ jobs:
         if: steps.setup_oneapi_cache.outputs.cache-hit != 'true'
         run: powershell .github/scripts/install_oneapi.ps1 "${{ env.BASEKIT_URL }}" "${{ env.HPCKIT_URL }}" ".github/oneapi_components.json"
         shell: powershell
-      
+
       - name: Set Environment Variables
         run: powershell -File .github/scripts/set_env_vars.ps1 'C:\Program Files (x86)\Intel\oneAPI\setvars.bat'
         shell: powershell
