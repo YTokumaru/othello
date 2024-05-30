@@ -89,10 +89,13 @@ Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board boar
                         mouse_y = event.mouse().y * 4;
                         if (event.mouse().motion == ftxui::Mouse::Motion::Pressed) {
                           auto [x_cnt, y_cnt] = coord2count(mouse_x, mouse_y);
-                          if (board.getTurn() % 2 == 0) {
-                            board.place(x_cnt, y_cnt, othello::Black);
-                          } else {
-                            board.place(x_cnt, y_cnt, othello::White);
+                          // Check if coordinates are inbounds
+                          if (othello::isInbounds(static_cast<int>(x_cnt), static_cast<int>(y_cnt))) {
+                            if (board.getTurn() % 2 == 0) {
+                              board.place(x_cnt, y_cnt, othello::Black);
+                            } else {
+                              board.place(x_cnt, y_cnt, othello::White);
+                            }
                           }
                         }
                       }

@@ -11,6 +11,7 @@ namespace othello {
 const int BOARD_HEIGHT = 8;
 const int BOARD_WIDTH = 8;
 
+inline bool isInbounds(int x, int y) { return (0 <= x && x < BOARD_WIDTH) && (0 <= y && y < BOARD_HEIGHT); }
 enum Color { Empty, Black, White };
 inline Color operator!(Color color)
 {

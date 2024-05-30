@@ -11,11 +11,7 @@
       "description": "General settings that apply to all configurations",
       "hidden": true,
       "binaryDir": "${sourceDir}/out/build/${presetName}",
-      "installDir": "${sourceDir}/out/install/${presetName}",
-      "cacheVariables": {
-        "othello_ENABLE_MPI": "ON",
-        "othello_NPROC": "4"
-      }
+      "installDir": "${sourceDir}/out/install/${presetName}"
     },
     {
       "name": "conf-windows-common",
