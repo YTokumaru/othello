@@ -57,11 +57,6 @@ jobs:
           sudo apt-get install -y cppcheck
           sudo apt-get install -y ccache
           sudo apt-get install -y ninja-build
-          sudo apt-get install -y openmpi-bin libopenmpi-dev
-          sudo apt-get install -y libboost-all-dev
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x llvm.sh
-          sudo ./llvm.sh 17
 
       - name: Setup CPM cache
         uses: ./.github/actions/setup_cpm_cache
@@ -70,14 +65,9 @@ jobs:
         uses: ./.github/actions/setup_ccache
 
       - name: Configure CMake
-        if: ${{ contains(matrix.preset, 'clang') }}
         run: |
-          cmake --preset ${{matrix.preset}} -Dothello_USE_SYSTEM_BOOST=TRUE -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17 -Dothello_ENABLE_CLANG_TIDY=FALSE -Dothello_NPROC=2
+          cmake --preset ${{matrix.preset}}
 
-      - name: Configure CMake
-        if: ${{ contains(matrix.preset, 'gcc') }}
-        run: |
-          cmake --preset ${{matrix.preset}} -Dothello_USE_SYSTEM_BOOST=TRUE -DCMAKE_CXX_COMPILER=g++-13 -DCMAKE_C_COMPILER=gcc-13 -Dothello_ENABLE_CLANG_TIDY=FALSE -Dothello_NPROC=2
       - name: Build
         # Execute the build.
         run: |
