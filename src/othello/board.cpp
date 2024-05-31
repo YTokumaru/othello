@@ -29,7 +29,7 @@ Color &Board::at(std::size_t x, std::size_t y) { return board_state.at(y).at(x);
 
 int Board::revert()
 {
-  if (history.empty()) { return EXIT_FAILURE; }
+  if (history.size() < 2) { return EXIT_FAILURE; }
   history.pop_back();
   board_state = history.back();
   return EXIT_SUCCESS;

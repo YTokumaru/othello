@@ -97,6 +97,8 @@ Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board &boa
                             board.place(x_cnt, y_cnt, board.getNextColor());
                           }
                         }
+                      } else if (event.is_character()) {
+                        if (event.character() == "z") { board.revert(); }
                       }
                       return false;
                     });
