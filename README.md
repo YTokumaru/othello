@@ -19,6 +19,6 @@ Build the project with 3 simple steps.
 mkdir build
 cmake -DCMAKE_BUILD_TYPE=RELEASE -Bbuild .
 cmake --build build
-cmake --install --prefix "Directory to install to"
+cmake --install build --prefix "Directory to install to"
 ```
 The binary will be available inside the `bin/` directory.
