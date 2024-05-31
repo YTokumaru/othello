@@ -69,7 +69,6 @@ endif()
 include(CTest)
 
 if(BUILD_TESTING)
-  message(AUTHOR_WARNING "Building Tests. Be sure to check out test/constexpr_tests.cpp for constexpr testing")
   add_subdirectory(test)
 endif()
 
@@ -95,7 +94,7 @@ include(cmake/PackageProject.cmake)
 # we know we want to ship
 othello_package_project(
   TARGETS
-  main
+  othello
   othello_options
   othello_warnings
   # FIXME: this does not work! CK

@@ -1,15 +1,15 @@
 include(GenerateExportHeader)
 
-add_executable(main main.cpp)
-target_link_libraries(main PRIVATE othello_options othello_warnings)
+add_executable(othello main.cpp)
+target_link_libraries(othello PRIVATE othello_options othello_warnings)
 target_link_libraries(
-  main
+  othello
   PRIVATE
     othello::board
     othello::rendering
 )
 target_link_system_libraries(
-  main
+  othello
   PRIVATE
     ftxui::component
 )
