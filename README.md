@@ -7,3 +7,15 @@
 
 ## About othello
 
+Simple game of othello, playable from the command line.
+
+## Build
+
+Build the project with 3 simple steps.
+```bash
+mkdir build
+cmake -DCMAKE_BUILD_TYPE=RELEASE -Bbuild .
+cmake --build build
+cmake --install --prefix "Directory to install to"
+```
+The binary will be available inside the `bin/` directory.
