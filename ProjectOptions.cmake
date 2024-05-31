@@ -30,7 +30,7 @@ macro(othello_setup_options)
 
   othello_supports_sanitizers()
 
-  if(NOT PROJECT_IS_TOP_LEVEL OR othello_PACKAGING_MAINTAINER_MODE)
+  if(NOT PROJECT_IS_TOP_LEVEL OR othello_PACKAGING_MAINTAINER_MODE OR CMAKE_BUILD_TYPE MATCHES "RELEASE")
     option(othello_ENABLE_IPO "Enable IPO/LTO" OFF)
     option(othello_WARNINGS_AS_ERRORS "Treat Warnings As Errors" OFF)
     option(othello_ENABLE_USER_LINKER "Enable user-selected linker" OFF)
@@ -99,7 +99,7 @@ macro(othello_global_options)
 
   if(othello_ENABLE_HARDENING AND othello_ENABLE_GLOBAL_HARDENING)
     include(cmake/Hardening.cmake)
-    if(NOT SUPPORTS_UBSAN 
+    if(NOT SUPPORTS_UBSAN
        OR othello_ENABLE_SANITIZER_UNDEFINED
        OR othello_ENABLE_SANITIZER_ADDRESS
        OR othello_ENABLE_SANITIZER_THREAD
@@ -185,7 +185,7 @@ macro(othello_local_options)
 
   if(othello_ENABLE_HARDENING AND NOT othello_ENABLE_GLOBAL_HARDENING)
     include(cmake/Hardening.cmake)
-    if(NOT SUPPORTS_UBSAN 
+    if(NOT SUPPORTS_UBSAN
        OR othello_ENABLE_SANITIZER_UNDEFINED
        OR othello_ENABLE_SANITIZER_ADDRESS
        OR othello_ENABLE_SANITIZER_THREAD
