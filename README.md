@@ -9,6 +9,8 @@
 
 Simple game of othello, playable from the command line.
 
+<img width="611" alt="Screenshot 2024-05-31 190046" src="https://github.com/YTokumaru/othello/assets/104337837/c60afb57-a8cb-4e5d-928f-de7886417173">
+
 ## Build
 
 Build the project with 3 simple steps.
