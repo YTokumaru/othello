@@ -51,6 +51,16 @@ public:
   ~Board() = default;
 
   /**
+   * @brief Edit the board at the coordinate (x,y)
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @param color The color to place
+   * @return EXIT_SUCCESS
+   */
+  int edit(std::size_t x, std::size_t y, othello::Color color);
+
+
+  /**
    * @brief Changes the board by a piece on (x,y)
    * @param x The x coordinate on the board
    * @param y The y coordinate on the board
@@ -116,15 +126,6 @@ public:
   };
 
 private:
-  /**
-   * @brief Edit the board at the coordinate (x,y)
-   * @param x The x coordinate
-   * @param y The y coordinate
-   * @param color The color to place
-   * @return EXIT_SUCCESS
-   */
-  int edit(std::size_t x, std::size_t y, othello::Color color);
-
   /**
    * @brief Returns the number of tiles that can be changed in the given direction
    * @param x The x coordinate to place

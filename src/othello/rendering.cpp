@@ -51,8 +51,6 @@ ftxui::Canvas boardCanvas(othello::Board &board, int mouse_x, int mouse_y)
     }
   }
 
-  // Check if the board is placable and pass the turn if not
-  if (!board.isPlacable(board.getNextColor())) { board.noPlace(); }
 
   // Draw the piece if the mouse is inside
   auto [mouse_x_cnt, mouse_y_cnt] = coord2count(mouse_x, mouse_y);
@@ -86,7 +84,13 @@ Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board &boa
   int mouse_x = 0;
   int mouse_y = 0;
   auto myscreen = ftxui::Renderer([&]() { return ftxui::canvas(boardCanvas(board, mouse_x, mouse_y)); })
-                  | ftxui::CatchEvent([&](ftxui::Event event) {// Mouse handling
+                  | ftxui::CatchEvent([&](ftxui::Event event) {
+                      // Check if the board is placable and pass the turn if not
+                      if (!board.isPlacable(board.getNextColor())) { board.noPlace(); }
+
+                      // If neither can place pieces, then end the game
+                      if (!board.isPlacable(othello::White) && !board.isPlacable(othello::Black)) { screen.Exit(); }
+
                       if (event.is_mouse()) {
                         mouse_x = event.mouse().x * 2;
                         mouse_y = event.mouse().y * 4;

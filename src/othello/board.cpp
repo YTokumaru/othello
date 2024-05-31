@@ -130,7 +130,7 @@ int Board::place(std::size_t x, std::size_t y, Color color)
     { { 1, -1 } } } };
   for (std::array<std::ptrdiff_t, 2> direction : directions) {
     // Check if a specific direction can be changed
-    int turn_count = checkDirection(x, y, direction, color);
+    const int turn_count = checkDirection(x, y, direction, color);
     if (turn_count > 0) {
       place_success = true;
 
