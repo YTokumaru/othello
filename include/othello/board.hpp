@@ -69,6 +69,34 @@ public:
   othello::Color &at(std::size_t x, std::size_t y);
 
   /**
+   * @brief Checks whether the color is placable on the current board
+   * @return True if placable, false if not
+   */
+  [[nodiscard]] bool isPlacable(othello::Color color) const;
+
+  /**
+   * @brief Checks whether the color is placable on the given coordinate
+   * @param x The x coordinate
+   * @param y The y coordinate
+   * @return True if placable, otherwise false
+   */
+  [[nodiscard]] bool isPlacable(std::size_t x, std::size_t y, othello::Color color) const;
+
+
+  /**
+   * @brief Revert board to a previous state
+   * @return EXIT_SUCCESS if reverted, else false
+   */
+  int revert();
+
+  /**
+   * @brief Revert board to a previous state
+   * @param count The numeber of times to revert
+   * @return EXIT_SUCCESS if reverted, else false
+   */
+  int revert(std::size_t count);
+
+  /**
    * @brief Return the number of the turns made
    * @return The numbers of turns made
    */
@@ -84,10 +112,22 @@ private:
    */
   int edit(std::size_t x, std::size_t y, othello::Color color);
 
+  /**
+   * @brief Returns the number of tiles that can be changed in the given direction
+   * @param x The x coordinate to place
+   * @param y The y coordinate to place
+   * @param direction The direction to check, as (x,y) vector eg. (1,-1)
+   * @param color The color to place
+   * @return The number of tiles that can be changed into the given direction, excluding the placing piece
+   */
+  [[nodiscard]] int
+    checkDirection(std::size_t x, std::size_t y, std::array<std::ptrdiff_t, 2> direction, othello::Color color) const;
+
   std::array<std::array<othello::Color, BOARD_WIDTH>, BOARD_HEIGHT>
     board_state = {}; /**< The current state of the board */
 
-  std::vector<std::tuple<int, int, othello::Color>> history; /**< The history of the board */
+  std::vector<std::array<std::array<othello::Color, BOARD_WIDTH>, BOARD_HEIGHT>>
+    history; /**< The history of the board */
 };
 
 }// namespace othello
