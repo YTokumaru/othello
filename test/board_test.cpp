@@ -20,3 +20,10 @@ TEST_CASE("First few moves are possible", "[Board]")
   REQUIRE(test_board.at(3, 3) == othello::Black);
   REQUIRE(test_board.at(4, 3) == othello::White);
 }
+
+TEST_CASE("Initial board should be placable", "[Board]")
+{
+  othello::Board test_board{};
+  REQUIRE(test_board.isPlacable(othello::White) == true);
+  REQUIRE(test_board.isPlacable(othello::Black) == true);
+}

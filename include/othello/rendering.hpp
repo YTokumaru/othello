@@ -10,10 +10,10 @@
 const int CANVAS_WIDTH = 160;
 const int CANVAS_HEIGHT = 160;
 enum Screen_State { Title, Game, Exit };
-ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y);
+ftxui::Canvas boardCanvas(othello::Board &board, int mouse_x, int mouse_y);
 std::tuple<std::size_t, std::size_t> coord2count(int x_coor, int y_coor);
 std::tuple<int, int> count2coord(std::size_t x_cnt, std::size_t y_cnt);
 ftxui::Element titleLogo();
-Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board);
+Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board &board);
 Screen_State titleRenderer(ftxui::ScreenInteractive &screen);
 #endif// !RENDERING_HPP

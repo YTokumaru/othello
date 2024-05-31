@@ -2,7 +2,6 @@
 #define OTHELLO_HPP
 #include <array>
 #include <cstddef>
-#include <tuple>
 #include <vector>
 
 
@@ -60,6 +59,11 @@ public:
   int place(std::size_t x, std::size_t y, othello::Color color);
 
   /**
+   * @brief Increment the turn without placing any piece
+   */
+  void noPlace();
+
+  /**
    * @brief Returns the color at the given coordinate
    * @param x The x coordinate
    * @param t The y coordinate
@@ -101,6 +105,15 @@ public:
    * @return The numbers of turns made
    */
   [[nodiscard]] size_t getTurn() const;
+
+  /**
+   * @brief Get the color of the player to play the next move
+   * @return Color of the next player
+   */
+  [[nodiscard]] inline othello::Color getNextColor() const noexcept
+  {
+    return getTurn() % 2 == 0 ? othello::White : othello::Black;
+  };
 
 private:
   /**

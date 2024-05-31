@@ -21,6 +21,8 @@ int Board::edit(std::size_t x, std::size_t y, Color color)
   return EXIT_SUCCESS;
 }
 
+void Board::noPlace() { history.emplace_back(board_state); }
+
 Color Board::at(std::size_t x, std::size_t y) const { return board_state.at(y).at(x); }
 
 Color &Board::at(std::size_t x, std::size_t y) { return board_state.at(y).at(x); }
@@ -45,10 +47,10 @@ bool Board::isPlacable(othello::Color color) const
 {
   for (std::size_t x_coor = 0; x_coor < BOARD_WIDTH; x_coor++) {
     for (std::size_t y_coor = 0; y_coor < BOARD_HEIGHT; y_coor++) {
-      if (!isPlacable(x_coor, y_coor, color)) { return false; }
+      if (isPlacable(x_coor, y_coor, color)) { return true; }
     }
   }
-  return true;
+  return false;
 }
 
 bool Board::isPlacable(std::size_t x, std::size_t y, othello::Color color) const
@@ -96,6 +98,11 @@ int Board::checkDirection(std::size_t x,
     if (at(static_cast<std::size_t>(check_x), static_cast<std::size_t>(check_y)) == !color) {
       exists_opposite = true;
       continue;
+    }
+
+    // If encountered the same color before the opposite color, then the piece cannot be placed
+    if (!exists_opposite && (at(static_cast<std::size_t>(check_x), static_cast<std::size_t>(check_y)) == color)) {
+      return 0;
     }
 
     // The opposing color is sandwiched by ours

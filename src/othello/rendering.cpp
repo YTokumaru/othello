@@ -37,7 +37,7 @@ std::tuple<int, int> count2coord(std::size_t x_cnt, std::size_t y_cnt)
   return { x_cnt * tile_width + (tile_width / 2), y_cnt * tile_height + (tile_height / 2) };
 }
 
-ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
+ftxui::Canvas boardCanvas(othello::Board &board, int mouse_x, int mouse_y)
 {
   const int RADIUS = 8;
   const ftxui::Color BOARD_COLOR = ftxui::Color::Green;
@@ -51,13 +51,16 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
     }
   }
 
+  // Check if the board is placable and pass the turn if not
+  if (!board.isPlacable(board.getNextColor())) { board.noPlace(); }
+
   // Draw the piece if the mouse is inside
   auto [mouse_x_cnt, mouse_y_cnt] = coord2count(mouse_x, mouse_y);
   auto [mouse_tile_x, mouse_tile_y] = count2coord(mouse_x_cnt, mouse_y_cnt);
   mycanvas.DrawPointCircle(mouse_tile_x,
     mouse_tile_y,
     RADIUS,
-    setColor(board.getTurn() % 2 == 0 ? ftxui::Color::Black : ftxui::Color::White, BOARD_COLOR));
+    setColor(board.getNextColor() == othello::Black ? ftxui::Color::Black : ftxui::Color::White, BOARD_COLOR));
 
   // draw the board
   for (std::size_t x_cnt = 0; x_cnt < othello::BOARD_WIDTH; x_cnt++) {
@@ -78,7 +81,7 @@ ftxui::Canvas boardCanvas(othello::Board board, int mouse_x, int mouse_y)
   return mycanvas;
 }
 
-Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board board)
+Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board &board)
 {
   int mouse_x = 0;
   int mouse_y = 0;
@@ -91,11 +94,7 @@ Screen_State boardRenderer(ftxui::ScreenInteractive &screen, othello::Board boar
                           auto [x_cnt, y_cnt] = coord2count(mouse_x, mouse_y);
                           // Check if coordinates are inbounds
                           if (othello::isInbounds(static_cast<int>(x_cnt), static_cast<int>(y_cnt))) {
-                            if (board.getTurn() % 2 == 0) {
-                              board.place(x_cnt, y_cnt, othello::Black);
-                            } else {
-                              board.place(x_cnt, y_cnt, othello::White);
-                            }
+                            board.place(x_cnt, y_cnt, board.getNextColor());
                           }
                         }
                       }

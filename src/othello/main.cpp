@@ -6,7 +6,7 @@
 int main()
 {
   Screen_State screen_state = Title;
-  const othello::Board board;
+  othello::Board board;
 
   auto screen = ftxui::ScreenInteractive::Fullscreen();
   while (screen_state != Exit) {
