@@ -4,6 +4,7 @@
 [![build(Ubuntu)](https://github.com/YTokumaru/othello/actions/workflows/build-ubuntu.yml/badge.svg)](https://github.com/YTokumaru/othello/actions/workflows/build-ubuntu.yml)
 [![build(MacOS)](https://github.com/YTokumaru/othello/actions/workflows/build-macos.yml/badge.svg)](https://github.com/YTokumaru/othello/actions/workflows/build-macos.yml)
 [![CodeQL](https://github.com/YTokumaru/othello/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/YTokumaru/othello/actions/workflows/codeql-analysis.yml)
+[![codecov](https://codecov.io/gh/YTokumaru/othello/graph/badge.svg?token=IR9HJ42X92)](https://codecov.io/gh/YTokumaru/othello)
 
 ## About othello
 
