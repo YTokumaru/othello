@@ -104,4 +104,9 @@ TEST_CASE("Normal reverting tests", "[Board]")
   REQUIRE(test_board.at(3, 4) == othello::White);
   REQUIRE(test_board.at(4, 3) == othello::White);
   REQUIRE(test_board.at(4, 4) == othello::Black);
+
+  test_board.noPlace();
+  test_board.noPlace();
+  test_board.noPlace();
+  REQUIRE(test_board.revert(3) == EXIT_SUCCESS);
 }
